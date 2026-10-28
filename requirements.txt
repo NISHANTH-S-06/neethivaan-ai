@@ -1,0 +1,6 @@
+# Root requirements.txt for production
+# This file includes all dependencies needed for the backend and production server.
+
+-r backend/requirements.txt
+gunicorn==21.2.0
+uvicorn[standard]==0.27.0
