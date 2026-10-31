@@ -29,7 +29,7 @@ def _mock_rag_answer(query: str):
 # --- Tests ---
 
 
-@patch("app.api.chat.rag_answer", side_effect=_mock_rag_answer)
+@patch("backend.app.api.chat.run_rag_pipeline", side_effect=_mock_rag_answer)
 def test_rag_chat_valid_query(mock_rag):
     """Valid query returns 200 with expected keys."""
     response = client.post("/api/rag-chat", json={"query": "What is cyber fraud?"})
@@ -41,7 +41,7 @@ def test_rag_chat_valid_query(mock_rag):
     assert data["query"] == "What is cyber fraud?"
 
 
-@patch("app.api.chat.rag_answer", side_effect=_mock_rag_answer)
+@patch("backend.app.api.chat.run_rag_pipeline", side_effect=_mock_rag_answer)
 def test_rag_chat_response_has_context(mock_rag):
     """Context should contain law text."""
     response = client.post("/api/rag-chat", json={"query": "IT Act penalties"})
@@ -67,7 +67,7 @@ def test_rag_chat_missing_query():
     assert response.status_code == 422
 
 
-@patch("app.api.chat.rag_answer", side_effect=RuntimeError("ChromaDB unavailable"))
+@patch("backend.app.api.chat.run_rag_pipeline", side_effect=RuntimeError("ChromaDB unavailable"))
 def test_rag_chat_pipeline_error(mock_rag):
     """When RAG pipeline throws, endpoint should return 500."""
     response = client.post("/api/rag-chat", json={"query": "test query"})

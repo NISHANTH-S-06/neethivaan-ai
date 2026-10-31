@@ -19,8 +19,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     if APP_ENV == "production":
         raise RuntimeError("SECRET_KEY environment variable is not set. Set it before starting the server.")
-    SECRET_KEY = "dev-secret-change-me"
-    print("[WARN] SECRET_KEY not set; using insecure dev fallback. Set SECRET_KEY for real deployments.")
+    import secrets as _secrets
+    SECRET_KEY = _secrets.token_urlsafe(48)  # random per-process; tokens reset on restart
+    print("[WARN] SECRET_KEY not set; using a random ephemeral dev key. Set SECRET_KEY in .env to persist sessions.")
 
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))

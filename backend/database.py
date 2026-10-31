@@ -7,7 +7,7 @@ load_environment()
 
 _pg_url = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:password@localhost:5432/neethivaan"
+    "postgresql://postgres@localhost:5432/neethivaan"
 )
 
 # ── Try PostgreSQL first; fall back to SQLite for local dev ──────────────────

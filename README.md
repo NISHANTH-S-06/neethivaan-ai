@@ -1,73 +1,38 @@
-# Neethivaan
+# Neethivaan — AI-Powered Legal Grievance & Awareness Platform
 
-Monorepo with:
+Helps citizens understand legal processes, file and track complaints (FIR/CSR references), and get step-by-step guidance, with an AI assistant grounded in Indian law texts (RAG).
 
-- `backend/`: FastAPI API server
-- `frontend/`: Next.js (React) web app
+<!-- TODO: add 2-3 screenshots here: docs/screenshots/home.png, chat.png, complaint.png -->
 
 ## Features
+- Citizen and admin roles with JWT authentication
+- Complaint filing and case tracking
+- AI legal assistant using Retrieval-Augmented Generation (ChromaDB + embeddings over IPC and other law texts)
+- Case analysis with NLP / case-based reasoning over prior judgments
+- Document upload and storage
 
-- ⚡ **Next.js 15** - React framework for production
-- 🎨 **Tailwind CSS** - Utility-first CSS framework
-- 🔥 **TypeScript** - Type-safe development
-- 📦 **App Router** - Latest Next.js routing system
-- 🌙 **Dark Mode** - Built-in dark mode support
+## Tech stack
+Next.js 15 (App Router, TypeScript, Tailwind) · FastAPI · PostgreSQL + Alembic · ChromaDB · Docker + Nginx
 
-## Getting Started
+## Architecture
+Browser -> Next.js frontend -> FastAPI backend -> PostgreSQL (users, cases) and ChromaDB (law embeddings) -> LLM API.
 
-### Frontend: Install Dependencies
-
+## Run locally
 ```bash
-cd frontend
-npm install
+cp .env.example .env        # set SECRET_KEY, POSTGRES_PASSWORD (same value in DATABASE_URL), LLM API key
+docker compose up -d        # database + backend
+cd frontend && npm install && npm run dev   # http://localhost:3000
 ```
+API docs: http://localhost:8000/docs
 
-### Frontend: Start Development Server
-
+## Tests
 ```bash
-cd frontend
-npm run dev
+pip install -r backend/requirements.txt pytest
+pytest backend/tests          # run from the repo root
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+## What I learned
+RAG chunking and retrieval ranking, role-based auth, containerised deployment. <!-- add 1-2 real challenges you solved -->
 
-## Available Scripts
-
-- `npm run dev` - Start development server (run inside `frontend/`)
-- `npm run build` - Build for production (run inside `frontend/`)
-- `npm run start` - Start production server (run inside `frontend/`)
-- `npm run lint` - Run ESLint (run inside `frontend/`)
-
-## Project Structure
-
-```
-backend/
-  main.py
-  requirements.txt
-frontend/
-  src/
-    app/
-      layout.tsx
-      page.tsx
-      globals.css
-```
-
-## Environment Variables
-
-Create a `frontend/.env.local` file for frontend environment variables:
-
-```env
-NEXT_PUBLIC_API_URL=your_api_url_here
-```
-
-## Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com)
-- [TypeScript Documentation](https://www.typescriptlang.org)
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new).
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Disclaimer
+Educational project. Not legal advice. Uses only sample/dummy data.
