@@ -33,8 +33,9 @@ def register(data: UserRegister, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    ALLOWED_ROLES = {"user", "lawyer"}
-    provided_role = data.role if data.role in ALLOWED_ROLES else "user"
+    # Security: the client must never choose its own role. Everyone registers as a
+    # citizen ("user"); an admin promotes verified lawyers via the admin approval route.
+    provided_role = "user"
     
     new_user = User(
         email=data.email,
@@ -82,6 +83,8 @@ async def login(request: Request, response: Response, db: Session = Depends(get_
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if getattr(user, "is_active", True) is False:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is suspended")
     
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(

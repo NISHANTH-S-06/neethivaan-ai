@@ -100,6 +100,12 @@ def _run_with_timeout(fn, args=(), kwargs=None, timeout_s: float = 3.0):
         return False, box["exc"]
     return True, box["value"]
 
+def _ensure_can_modify(case: Complaint, user: User) -> None:
+    """Only the complaint owner or an admin may modify a case or add files to it."""
+    if user.role != "admin" and case.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Not allowed to modify this complaint")
+
+
 @router.post("/")
 def create_complaint(
     data: ComplaintCreate,
@@ -226,6 +232,7 @@ def update_complaint(
     case = db.query(Complaint).filter(Complaint.case_id == case_id).first()
     if not case:
         raise HTTPException(status_code=404, detail="Complaint not found")
+    _ensure_can_modify(case, current_user)
     if "description" in data:
         case.description = data["description"]
     if "title" in data:
@@ -246,6 +253,7 @@ def create_attachment_url(
     case = db.query(Complaint).filter(Complaint.case_id == case_id).first()
     if not case:
         raise HTTPException(status_code=404, detail="Complaint not found")
+    _ensure_can_modify(case, current_user)
     safe_name = f"{case_id}/{file_name}"
     new_attachment = Attachment(
         case_id=case_id, filename=file_name,
@@ -269,6 +277,7 @@ def confirm_attachment(
     case = db.query(Complaint).filter(Complaint.case_id == case_id).first()
     if not case:
         raise HTTPException(status_code=404, detail="Complaint not found")
+    _ensure_can_modify(case, current_user)
     try:
         from backend.tasks import scan_file_task
         scan_file_task.delay("attachments", storage_path, case_id)
@@ -287,6 +296,7 @@ def upload_file(
     case = db.query(Complaint).filter(Complaint.case_id == case_id).first()
     if not case:
         raise HTTPException(status_code=404, detail="Complaint not found")
+    _ensure_can_modify(case, current_user)
         
     ext = os.path.splitext(file.filename)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
