@@ -2,7 +2,7 @@
 Automated tests for the RAG chat endpoint POST /api/rag-chat.
 Uses FastAPI TestClient with mocked RAG dependencies.
 """
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from fastapi.testclient import TestClient
 from backend.main import app
 

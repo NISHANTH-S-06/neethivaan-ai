@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from backend.database import SessionLocal, engine
-from backend.models import User, Complaint, Notification, AuditLog, Base
+from backend.database import SessionLocal
+from backend.models import User, Complaint, Notification, AuditLog
 
 def generate_demo_data():
     db = SessionLocal()

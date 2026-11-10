@@ -5,7 +5,6 @@ Run with: python scripts/test_rag_manual.py
 Requires the backend to be running (docker-compose up).
 """
 import httpx
-import json
 import sys
 
 BASE_URL = "http://localhost:8000/api"

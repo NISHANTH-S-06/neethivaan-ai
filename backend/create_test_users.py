@@ -3,8 +3,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from passlib.context import CryptContext
-from sqlalchemy.orm import Session
-from backend.database import engine, SessionLocal
+from backend.database import SessionLocal
 from backend.models import User
 import uuid
 from datetime import datetime

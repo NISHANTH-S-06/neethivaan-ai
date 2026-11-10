@@ -12,7 +12,7 @@ import shutil
 from backend.database import get_db
 from backend.services.minio_client import get_presigned_upload_url, get_presigned_download_url
 from backend.ai.rag_pipeline import run_rag_pipeline as rag_answer
-from backend.auth import get_current_user, RoleChecker
+from backend.auth import get_current_user
 from backend.models import Complaint, Attachment, User
 
 router = APIRouter(prefix="/complaints", tags=["Complaints"])

@@ -1,5 +1,4 @@
 # Database Seed script for Neethivaan Platform
-import datetime
 
 def main():
     print("Connecting to database...")

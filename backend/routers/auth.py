@@ -1,9 +1,8 @@
 import os
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from datetime import timedelta, datetime
-from pydantic import BaseModel, Field
+from datetime import timedelta
+from pydantic import BaseModel
 from typing import Optional
 from backend.database import get_db
 from backend.models import User, Notification
@@ -71,7 +70,6 @@ async def login(request: Request, response: Response, db: Session = Depends(get_
     if not email or not password:
         # Fallback to OAuth2 form if possible
         try:
-            from fastapi.security import OAuth2PasswordRequestForm
             # This is hard to call manually, so we just check the form again
             pass 
         except: pass

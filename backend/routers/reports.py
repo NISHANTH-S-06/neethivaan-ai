@@ -1,11 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 import uuid
-import datetime
 
 from backend.database import get_db
-from backend.models import Complaint
 from backend.services.minio_client import get_presigned_download_url
 
 router = APIRouter(prefix="/reports", tags=["Reports"])
