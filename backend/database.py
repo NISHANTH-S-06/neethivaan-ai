@@ -12,16 +12,21 @@ _pg_url = os.getenv(
 
 # ── Try PostgreSQL first; fall back to SQLite for local dev ──────────────────
 def _make_engine():
-    # Try PostgreSQL
+    # Try PostgreSQL (pool_recycle keeps connections healthy on serverless Postgres such as Neon)
     try:
-        eng = create_engine(_pg_url, pool_pre_ping=True, connect_args={})
+        eng = create_engine(_pg_url, pool_pre_ping=True, pool_recycle=300, connect_args={})
         with eng.connect() as c:
             c.execute(text("SELECT 1"))
         print("[DB] Connected to PostgreSQL.")
         return eng, _pg_url
     except Exception as pg_err:
+        # In production never silently switch to a throw-away SQLite file.
+        if os.getenv("APP_ENV", "development").lower() == "production":
+            raise RuntimeError(
+                f"PostgreSQL is required in production but is unavailable ({pg_err.__class__.__name__})."
+            ) from pg_err
         print(f"[DB] PostgreSQL unavailable ({pg_err.__class__.__name__}). "
-              f"Falling back to SQLite.")
+              f"Falling back to SQLite (development only).")
 
     # SQLite fallback
     _db_dir = os.path.dirname(os.path.abspath(__file__))
